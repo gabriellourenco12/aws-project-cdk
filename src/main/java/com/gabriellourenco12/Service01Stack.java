@@ -24,9 +24,10 @@ public class Service01Stack extends Stack {
                 .serviceName("service-01")
                 .cluster(cluster)
                 .cpu(512)
+                .memoryLimitMiB(1024)
                 .desiredCount(2)
                 .listenerPort(8080)
-                .memoryLimitMiB(1024)
+                .assignPublicIp(true)
                 .taskImageOptions(
                         ApplicationLoadBalancedTaskImageOptions.builder()
                                 .containerName("aws-project")

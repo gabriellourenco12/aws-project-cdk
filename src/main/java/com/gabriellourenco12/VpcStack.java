@@ -19,6 +19,7 @@ public class VpcStack extends Stack {
 
         Vpc.Builder.create(this, "vpc-01")
                 .maxAzs(3)
+                .natGateways(0)
                 .build();
     }
 }
