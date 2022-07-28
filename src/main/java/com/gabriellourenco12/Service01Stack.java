@@ -1,9 +1,6 @@
 package com.gabriellourenco12;
 
-import software.amazon.awscdk.Duration;
-import software.amazon.awscdk.RemovalPolicy;
-import software.amazon.awscdk.Stack;
-import software.amazon.awscdk.StackProps;
+import software.amazon.awscdk.*;
 import software.amazon.awscdk.services.applicationautoscaling.EnableScalingProps;
 import software.amazon.awscdk.services.ecs.*;
 import software.amazon.awscdk.services.ecs.patterns.ApplicationLoadBalancedFargateService;
@@ -12,6 +9,9 @@ import software.amazon.awscdk.services.elasticloadbalancingv2.HealthCheck;
 import software.amazon.awscdk.services.logs.LogGroup;
 import software.constructs.Construct;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class Service01Stack extends Stack {
     public Service01Stack(final Construct scope, final String id, Cluster cluster) {
         this(scope, id, null, cluster);
@@ -19,6 +19,12 @@ public class Service01Stack extends Stack {
 
     public Service01Stack(final Construct scope, final String id, final StackProps props, Cluster cluster) {
         super(scope, id, props);
+
+        Map<String, String> envVariables = new HashMap<>();
+        envVariables.put("SPRING_DATASOURCE_URL", "jdbc:awsdb://" + Fn.importValue("rds-endpoint")
+                + ":3306/aws_project?createDatabaseIfNotExist=true");
+        envVariables.put("SPRING_DATASOURCE_USERNAME", "admin");
+        envVariables.put("SPRING_DATASOURCE_PASSWORD", Fn.importValue("rds-password"));
 
         ApplicationLoadBalancedFargateService service01 = ApplicationLoadBalancedFargateService.Builder.create(this, "ALB01")
                 .serviceName("service-01")
@@ -40,6 +46,7 @@ public class Service01Stack extends Stack {
                                                 .build())
                                                 .streamPrefix("Service01")
                                         .build()))
+                                .environment(envVariables)
                                 .build())
                 .publicLoadBalancer(true)
                 .build();
