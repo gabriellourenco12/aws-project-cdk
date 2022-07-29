@@ -21,7 +21,7 @@ public class Service01Stack extends Stack {
         super(scope, id, props);
 
         Map<String, String> envVariables = new HashMap<>();
-        envVariables.put("SPRING_DATASOURCE_URL", "jdbc:awsdb://" + Fn.importValue("rds-endpoint")
+        envVariables.put("SPRING_DATASOURCE_URL", "jdbc:mariadb://" + Fn.importValue("rds-endpoint")
                 + ":3306/aws_project?createDatabaseIfNotExist=true");
         envVariables.put("SPRING_DATASOURCE_USERNAME", "admin");
         envVariables.put("SPRING_DATASOURCE_PASSWORD", Fn.importValue("rds-password"));
