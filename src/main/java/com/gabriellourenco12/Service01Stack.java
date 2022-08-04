@@ -26,6 +26,8 @@ public class Service01Stack extends Stack {
                 + ":3306/aws-project?createDatabaseIfNotExist=true");
         envVariables.put("SPRING_DATASOURCE_USERNAME", "admin");
         envVariables.put("SPRING_DATASOURCE_PASSWORD", Fn.importValue("rds-password"));
+        envVariables.put("AWS_REGION", "us-east-1");
+        envVariables.put("AWS_SNS_TOPIC_PRODUCT_EVENTS_ARN", productEventsTopic.getTopic().getTopicArn());
 
         ApplicationLoadBalancedFargateService service01 = ApplicationLoadBalancedFargateService.Builder.create(this, "ALB01")
                 .serviceName("service-01")
@@ -38,7 +40,7 @@ public class Service01Stack extends Stack {
                 .taskImageOptions(
                         ApplicationLoadBalancedTaskImageOptions.builder()
                                 .containerName("aws-project")
-                                .image(ContainerImage.fromRegistry("gabriellourenco/aws-project:0.0.3-SNAPSHOT"))
+                                .image(ContainerImage.fromRegistry("gabriellourenco/aws-project:0.0.4-SNAPSHOT"))
                                 .containerPort(8080)
                                 .logDriver(LogDriver.awsLogs(AwsLogDriverProps.builder()
                                         .logGroup(LogGroup.Builder.create(this, "Service01LogGroup")
