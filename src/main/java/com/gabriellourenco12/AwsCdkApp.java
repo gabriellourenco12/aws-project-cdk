@@ -25,7 +25,7 @@ public class AwsCdkApp {
         DynamoDBStack dynamoDBStack = new DynamoDBStack(app, "DynamoDB");
 
         Service02Stack service02Stack = new Service02Stack(app, "Service02",
-                clusterStack.getCluster(), snsStack.getProductEventsTopic());
+                clusterStack.getCluster(), snsStack.getProductEventsTopic(), dynamoDBStack.getProductEventsTable());
         service02Stack.addDependency(clusterStack);
         service02Stack.addDependency(snsStack);
         service02Stack.addDependency(dynamoDBStack);
