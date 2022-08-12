@@ -1,13 +1,11 @@
 package com.gabriellourenco12;
 
 import lombok.Getter;
+import software.amazon.awscdk.Duration;
 import software.amazon.awscdk.RemovalPolicy;
 import software.amazon.awscdk.Stack;
 import software.amazon.awscdk.StackProps;
-import software.amazon.awscdk.services.dynamodb.Attribute;
-import software.amazon.awscdk.services.dynamodb.AttributeType;
-import software.amazon.awscdk.services.dynamodb.BillingMode;
-import software.amazon.awscdk.services.dynamodb.Table;
+import software.amazon.awscdk.services.dynamodb.*;
 import software.constructs.Construct;
 
 public class DynamoDBStack extends Stack {
@@ -37,5 +35,25 @@ public class DynamoDBStack extends Stack {
                 .timeToLiveAttribute("ttl")
                 .removalPolicy(RemovalPolicy.DESTROY)
                 .build();
+
+        productEventsTable.autoScaleReadCapacity(EnableScalingProps.builder()
+                        .minCapacity(1)
+                        .maxCapacity(4)
+                        .build())
+                .scaleOnUtilization(UtilizationScalingProps.builder()
+                        .targetUtilizationPercent(70)
+                        .scaleInCooldown(Duration.seconds(30))
+                        .scaleOutCooldown(Duration.seconds(30))
+                        .build());
+
+        productEventsTable.autoScaleWriteCapacity(EnableScalingProps.builder()
+                        .minCapacity(1)
+                        .maxCapacity(4)
+                        .build())
+                .scaleOnUtilization(UtilizationScalingProps.builder()
+                        .targetUtilizationPercent(70)
+                        .scaleInCooldown(Duration.seconds(30))
+                        .scaleOutCooldown(Duration.seconds(30))
+                        .build());
     }
 }
